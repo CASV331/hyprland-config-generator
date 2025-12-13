@@ -1,0 +1,11 @@
+@import "tailwindcss";
+
+body {
+    background-color: #1e1e2e;
+}
+
+/* Desktop preview styles */
+.desktop-preview-conatiner {
+    background-image: url('/frontend/public/AsaDen.png');
+    object-fit: fill;
+}
