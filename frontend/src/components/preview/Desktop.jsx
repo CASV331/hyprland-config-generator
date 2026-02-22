@@ -1,0 +1,22 @@
+import { Terminal } from "./DeComponents/Terminal";
+import { StatusBar } from "./DeComponents/StatusBar";
+function Preview() {
+  return (
+    <div className="w-full aspect-video p-2 border-4 rounded-xl border-gray-700 desktop-preview-container">
+      <div
+        className="flex flex-col relative w-full h-full p-2 rounded-lg overflow-hidden group"
+        style={{
+          backgroundImage: "url('/sunset-anime.jpg')",
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+          backgroundRepeat: "no-repeat",
+        }}
+      >
+        <StatusBar />
+        <Terminal />
+      </div>
+    </div>
+  );
+}
+
+export default Preview;
