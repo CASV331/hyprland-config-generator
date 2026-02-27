@@ -1,20 +1,39 @@
 import { useState } from "react";
 import SectionButton from "../../ui/button/SectionButton";
+import StatusBarConfig from "../../preview/DeComponents/statusBar/StatusBar_config";
+import TerminalConfig from "../../preview/DeComponents/terminal/Terminal_config";
 
 function Sidebar() {
 
   const [activeSection, setActiveSection] = useState("Options");
 
-  const sections = ["Options", "Settings", "About"];
+  const sections = ["Status Bar", "Terminal"];
+
+  const componentMap = {
+    "Status Bar": StatusBarConfig,
+    "Terminal": TerminalConfig
+  };
+
+  const handleClick = (section) => {
+    setActiveSection(prev => prev === section ? null : section);
+  };
 
   return (
-    <aside className="sidebar w-5/8 aspect-video lg:max-w-1/3">
-      <ul className="sidebar__list w-full flex flex-col">
-        {sections.map(section => (<li
-          key={section}>
-          <SectionButton value={section} isActive={section === activeSection} onClick={() => setActiveSection(section)} />
-        </li>))}
-      </ul>
+    <aside className="sidebar">
+      <nav className="sidebar__nav">
+        <ul className="flex flex-col gap-2">
+          {sections.map(section => {
+            const Component = componentMap[section];
+            return (
+              <li key={section}>
+                <SectionButton value={section} isActive={activeSection === section} onClick={() => handleClick(section)}>
+                  <Component />
+                </SectionButton>
+              </li>
+            );
+          })}
+        </ul>
+      </nav>
     </aside>
   );
 }

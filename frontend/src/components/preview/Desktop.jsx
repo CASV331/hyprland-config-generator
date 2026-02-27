@@ -1,5 +1,5 @@
-import { Terminal } from "./DeComponents/Terminal";
-import { StatusBar } from "./DeComponents/StatusBar";
+import { Terminal } from "./DeComponents/terminal/Terminal";
+import { StatusBar } from "./DeComponents/statusBar/StatusBar";
 function Preview() {
   return (
     <div className="w-full aspect-video p-2 border-4 rounded-xl border-gray-700 desktop-preview-container">
