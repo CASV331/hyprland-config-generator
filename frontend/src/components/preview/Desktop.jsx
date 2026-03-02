@@ -2,7 +2,7 @@ import { Terminal } from "./DeComponents/terminal/Terminal";
 import { StatusBar } from "./DeComponents/statusBar/StatusBar";
 function Preview() {
   return (
-    <div className="w-full aspect-video p-2 border-4 rounded-xl border-gray-700 desktop-preview-container">
+    <div className="w-full aspect-video p-2 border-4 rounded-xl border-gray-700 desktop-preview-container sticky top-0">
       <div
         className="flex flex-col relative w-full h-full p-2 rounded-lg overflow-hidden group"
         style={{

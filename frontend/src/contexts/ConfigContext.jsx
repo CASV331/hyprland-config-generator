@@ -2,11 +2,16 @@ import { createContext, useContext, useState } from "react";
 
 const defaultConfig = {
     statusBar: {
-        textColor: "#cdd6f4",
+        background: "#80b4f4",
+        backgroundOpacity: 0.8,
         borderColor: "#89b4fa",
         borderOpacity: 0.8,
-        background: "rgba(80, 30, 46, 0.8)",
-        backgroundOpacity: 0.8,
+        borderWidth: 1,
+        textColor: "#cdd6f4",
+        marginTop: 0,
+        marginBottom: 0,
+        marginLeft: 0,
+        marginRight: 0
     },
     terminal: {
         backgroundColor: "#1e1e2e",

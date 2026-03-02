@@ -3,29 +3,34 @@ import { useConfig } from "../../../../contexts/ConfigContext"
 export default function StatusBarConfig() {
     const { config, updateConfig } = useConfig();
     const {
-        backgroundColor,
-        textColor,
-        borderColor,
+        background,
         backgroundOpacity,
-        borderOpacity
+        borderColor,
+        borderOpacity,
+        borderWidth,
+        textColor,
+        marginTop,
+        marginBottom,
+        marginLeft,
+        marginRight
     } = config.statusBar;
 
     return (
-        <div className="flex flex-col gap-4">
-            <div className="flex flex-col gap-2">
+        <div className="flex flex-row gap-4">
+            <div className="flex flex-col gap-2 backgroundContainer">
                 <div>
-                    <label className="text-gray-400 text-xs">Background Color</label>
+                    <label className="text-gray-400 text-xs font-black">Background Color:</label>
                     <input
                         type="color"
-                        value={backgroundColor}
+                        value={background}
                         onChange={(e) => updateConfig("statusBar", "background", e.target.value)}
-                        className="w-full h-8 rounded-md border border-gray-700 cursor-pointer"
+                        className="w-full h-8 rounded-md border border-gray-900 cursor-pointer"
                     />
                 </div>
                 <div className="flex flex-col gap-2">
-                    <div className="flex justify-between">
-                        <label className="text-gray-400 text-xs">Background opacity</label>
-                        <span>{backgroundOpacity}</span>
+                    <div className="flex gap-2">
+                        <label className="text-gray-400 text-xs font-black">Background opacity:</label>
+                        <span className="w-10">{backgroundOpacity}</span>
                         <input
                             type="range"
                             min="0"
@@ -40,23 +45,102 @@ export default function StatusBarConfig() {
                 </div>
             </div>
 
-            <div className="flex flex-col gap-2">
-                <label className="text-gray-400 text-xs">Border Color</label>
-                <input
-                    type="color"
-                    value={borderColor}
-                    onChange={(e) => updateConfig("statusBar", "borderColor", e.target.value)}
-                    className="w-full h-8 rounded-md border border-gray-700 cursor-pointer"
-                />
+            <div className="flex flex-col gap-2 borderContainer">
+                <div>
+                    <label className="text-gray-400 text-xs font-black">Border Color:</label>
+                    <input
+                        type="color"
+                        value={borderColor}
+                        onChange={(e) => updateConfig("statusBar", "borderColor", e.target.value)}
+                        className="w-full h-8 rounded-md border border-gray-900 cursor-pointer"
+                    />
+                </div>
+                <div className="flex flex-col gap-2">
+                    <div className="flex gap-2">
+                        <label className="text-gray-400 text-xs font-black">Border opacity:</label>
+                        <span className="w-10">{borderOpacity}</span>
+                        <input
+                            type="range"
+                            min="0"
+                            max="1"
+                            step="0.05"
+                            placeholder="0"
+                            value={borderOpacity ?? 0}
+                            onChange={(e) => updateConfig("statusBar", "borderOpacity", parseFloat(e.target.value))}
+                            className="w-full"
+                        />
+                    </div>
+                </div>
             </div>
-            <div className="flex flex-col gap-2">
-                <label className="text-gray-400 text-xs">Text Color</label>
-                <input
-                    type="color"
-                    value={textColor}
-                    onChange={(e) => updateConfig("statusBar", "textColor", e.target.value)}
-                    className="w-full h-8 rounded-md border border-gray-700 cursor-pointer"
-                />
+            <div className="flex flex-col gap-2 text-center">
+                <div className="flex flex-col w-full">
+                    <label className="text-gray-400 text-xs font-black">Border width:</label>
+                    <input
+                        type="number"
+                        value={borderWidth}
+                        min={0}
+                        max={10}
+                        onChange={(e) => {
+                            updateConfig("statusBar", "borderWidth", e.target.value)
+                        }}
+                        className="w-full h-8 rounded-md border border-gray-700 cursor-pointer"
+                    />
+                </div>
+                <div className="flex flex-col w-full">
+                    <label className="text-gray-400 text-xs font-black">Text Color</label>
+                    <input
+                        type="color"
+                        value={textColor}
+                        onChange={(e) => updateConfig("statusBar", "textColor", e.target.value)}
+                        className="w-full h-8 rounded-md border border-gray-700 cursor-pointer"
+                    />
+                </div>
+            </div>
+            <div className="marginContainer">
+                <div className="flex flex-row gap-4">
+                    <div className="flex flex-col w-full">
+                        <label className="text-gray-400 text-xs font-black">Margin top:</label>
+                        <input
+                            type="number"
+                            value={marginTop ?? 0}
+                            max={20}
+                            onChange={(e) => {
+                                if (e.target.value >= 0) { updateConfig("statusBar", "marginTop", parseInt(e.target.value)) }
+                            }}
+                            className="w-12 h-8 rounded-md border border-gray-700 cursor-pointer"
+                        />
+                        <label className="text-gray-400 text-xs font-black">Margin Bottom:</label>
+                        <input
+                            type="number"
+                            value={marginBottom ?? 0}
+                            max={20}
+                            onChange={(e) => {
+                                if (e.target.value >= 0) { updateConfig("statusBar", "marginBottom", parseInt(e.target.value)) }
+                            }}
+                            className="w-12 h-8 rounded-md border border-gray-700 cursor-pointer"
+                        />
+                        <label className="text-gray-400 text-xs font-black">Margin Right:</label>
+                        <input
+                            type="number"
+                            max={20}
+                            value={marginRight ?? 0}
+                            onChange={(e) => {
+                                if (e.target.value >= 0) { updateConfig("statusBar", "marginRight", parseInt(e.target.value)) }
+                            }}
+                            className="w-12 h-8 rounded-md border border-gray-700 cursor-pointer"
+                        />
+                        <label className="text-gray-400 text-xs font-black">Margin Left:</label>
+                        <input
+                            type="number"
+                            max={20}
+                            value={marginLeft ?? 0}
+                            onChange={(e) => {
+                                if (e.target.value >= 0) { updateConfig("statusBar", "marginLeft", parseInt(e.target.value)) }
+                            }}
+                            className="w-12 h-8 rounded-md border border-gray-700 cursor-pointer"
+                        />
+                    </div>
+                </div>
             </div>
         </div>
     )

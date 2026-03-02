@@ -7,7 +7,7 @@ export default function SectionButton({ value, isActive, onClick, children }) {
             </button>
 
             <div className={`overflow-hidden transition-all duration-300 ${isActive ? "max-h-96" : "max-h-0"}`}>
-                <div className="mt-1 p-3 bg-gray-800 border border-gray-600 border-t-0 rounded-b-lg">
+                <div className="p-3 bg-gray-800 border border-gray-600 border-t-0 rounded-b-lg">
                     {children}
                 </div>
             </div>
