@@ -14,6 +14,7 @@ export function StatusBar() {
         background,
         backgroundOpacity,
         textColor,
+        fontSize,
         borderColor,
         borderOpacity,
         borderWidth,
@@ -49,11 +50,12 @@ export function StatusBar() {
 
     return (
         <div
-            className="rounded-lg flex gap-1 justify-between items-center text-xs"
+            className="rounded-lg flex gap-1 justify-between items-center"
             style={{
                 backgroundColor: bgColor,
                 border: `${borderWidth}px solid ${borderColorRgba}`,
                 color: textColor,
+                fontSize: `${fontSize}px`,
                 margin: `${marginTop}px ${marginRight}px ${marginBottom}px ${marginLeft}px`,
             }}
         >
@@ -62,7 +64,7 @@ export function StatusBar() {
                     <button
                         key={desktop}
                         onClick={() => setActiveDesktop(desktop)}
-                        className={`px-2 py-1 text-xs border border-gray-800/50 rounded-lg ${activeDesktop === desktop ? "bg-blue-500/70" : "bg-gray-800/50"}`}
+                        className={`px-2 py-1 border border-gray-800/50 rounded-lg ${activeDesktop === desktop ? "bg-blue-500/70" : "bg-gray-800/50"}`}
                     >
                         {desktop}
                     </button>
