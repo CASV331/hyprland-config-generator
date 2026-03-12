@@ -30,7 +30,7 @@ export function Terminal() {
         [borderColor, borderOpacity]
     );
     return (
-        <div className="flex-1 flex mt-2 gap-4 ">
+        <div className="flex-1 flex gap-4 ">
             <div
                 className="flex-1 flexrounded-lg p-3 rounded-lg"
                 style={{
