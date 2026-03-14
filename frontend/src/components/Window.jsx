@@ -2,7 +2,7 @@ import { useRef, useState, useEffect } from "react"
 import { useConfig } from "../contexts/ConfigContext"
 
 export function Window({ windowData, children }) {
-    const { config, focusWindow, closeFocusedWindow, moveWindow } = useConfig()
+    const { config, focusWindow, closeFocusedWindow, moveWindow, openWindow } = useConfig()
     const { borderColor, borderWidth, borderRadius } = config.window
 
     const { id, position, size, isFocused } = windowData
@@ -10,24 +10,41 @@ export function Window({ windowData, children }) {
     const isDragging = useRef(false)
     const dragOffset = useRef({ x: 0, y: 0 })
 
-    // Listen to Alt button
+    // Listen to mod button
     const isModPressed = useRef(false)
 
-    useEffect(() => {
-        const handleKeyDown = (e) => {
-            if (e.key === "z") isModPressed.current = true
-        }
-        const handleKeyUp = (e) => {
-            if (e.key === "z") isModPressed.current = false
-        }
+    // useEffect(() => {
+    //     const handleKeyDown = (e) => {
+    //         console.log("Key down")
+    //         if (e.key === "z") {
+    //             isModPressed.current = true
+    //             console.log("mod")
+    //         }
 
-        window.addEventListener("keydown", handleKeyDown)
-        window.addEventListener("keyup", handleKeyUp)
-        return () => {
-            window.removeEventListener("keydown", handleKeyDown)
-            window.removeEventListener("keyup", handleKeyUp)
-        }
-    }, [])
+    //         if (isModPressed.current) {
+    //             console.log("Tecla mod")
+    //             if (e.key === "q") {
+    //                 e.preventDefault()
+    //                 console.log("Abriendo terminal...")
+    //                 openWindow("terminal")
+    //             }
+    //             if (e.key === "c") {
+    //                 e.preventDefault()
+    //                 closeFocusedWindow()
+    //             }
+    //         }
+    //     }
+    //     const handleKeyUp = (e) => {
+    //         if (e.key === "z") isModPressed.current = false
+    //     }
+
+    //     window.addEventListener("keydown", handleKeyDown)
+    //     window.addEventListener("keyup", handleKeyUp)
+    //     return () => {
+    //         window.removeEventListener("keydown", handleKeyDown)
+    //         window.removeEventListener("keyup", handleKeyUp)
+    //     }
+    // }, [])
 
     const handleMouseDown = (e) => {
         // Focus window on click
@@ -66,14 +83,6 @@ export function Window({ windowData, children }) {
         document.addEventListener("mouseup", handleMouseUp)
 
     }
-
-    const handleActions = (e) => {
-        if (isModPressed & e.key === "q") console.log("openWindo")
-    }
-
-    document.addEventListener("keypress", handleActions)
-
-
 
     return (
         <div
