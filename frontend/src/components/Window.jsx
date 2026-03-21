@@ -13,38 +13,25 @@ export function Window({ windowData, children }) {
     // Listen to mod button
     const isModPressed = useRef(false)
 
-    // useEffect(() => {
-    //     const handleKeyDown = (e) => {
-    //         console.log("Key down")
-    //         if (e.key === "z") {
-    //             isModPressed.current = true
-    //             console.log("mod")
-    //         }
+    useEffect(() => {
+        const handleKeyDown = (e) => {
+            console.log("Key down")
+            if (e.key === "z") {
+                isModPressed.current = true
+                console.log("mod")
+            }
+        }
+        const handleKeyUp = (e) => {
+            if (e.key === "z") isModPressed.current = false
+        }
 
-    //         if (isModPressed.current) {
-    //             console.log("Tecla mod")
-    //             if (e.key === "q") {
-    //                 e.preventDefault()
-    //                 console.log("Abriendo terminal...")
-    //                 openWindow("terminal")
-    //             }
-    //             if (e.key === "c") {
-    //                 e.preventDefault()
-    //                 closeFocusedWindow()
-    //             }
-    //         }
-    //     }
-    //     const handleKeyUp = (e) => {
-    //         if (e.key === "z") isModPressed.current = false
-    //     }
-
-    //     window.addEventListener("keydown", handleKeyDown)
-    //     window.addEventListener("keyup", handleKeyUp)
-    //     return () => {
-    //         window.removeEventListener("keydown", handleKeyDown)
-    //         window.removeEventListener("keyup", handleKeyUp)
-    //     }
-    // }, [])
+        window.addEventListener("keydown", handleKeyDown)
+        window.addEventListener("keyup", handleKeyUp)
+        return () => {
+            window.removeEventListener("keydown", handleKeyDown)
+            window.removeEventListener("keyup", handleKeyUp)
+        }
+    }, [])
 
     const handleMouseDown = (e) => {
         // Focus window on click
@@ -86,7 +73,7 @@ export function Window({ windowData, children }) {
 
     return (
         <div
-            className={`absolute overflow-hidden transition-shadow ${isFocused ? "shadow-lg shadow-[#89b4fa]/20" : "opacity-80"}
+            className={`grid relative overflow-hidden transition-shadow ${isFocused ? "shadow-lg shadow-[#89b4fa]/20" : "opacity-80"}
         ${isFocused.current ? "cursor-grab" : "cursor-default"}
         `}
             style={{

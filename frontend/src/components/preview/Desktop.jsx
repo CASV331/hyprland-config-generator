@@ -2,12 +2,32 @@ import { useConfig } from "../../contexts/ConfigContext";
 import { Window } from "../Window";
 import { Terminal } from "./DeComponents/terminal/Terminal";
 import { StatusBar } from "./DeComponents/statusBar/StatusBar";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
+import { calculateLayout } from "../Tiling";
 
 function Preview() {
-  const { desktopState, openWindow, closeWindow } = useConfig()
+  const { desktopState, openWindow, closeFocusedWindow } = useConfig()
   const { activeDesktop, desktops } = desktopState
   const currentWindows = desktops[activeDesktop].windows
+
+  const [containerSize, setContainerSize] = useState({ width: 0, height: 0 })
+
+  const containerRef = useRef(null)
+
+  useEffect(() => {
+    if (!containerRef.current) return
+    const { width, height } = containerRef.current.getBoundingClientRect()
+    setContainerSize({ width, height })
+  }, [])
+  const layout = useMemo(() => {
+    if (currentWindows.length === 0) return {}
+    if (containerSize.width === 0) return {}
+
+    const { width, height } = containerRef.current.getBoundingClientRect()
+
+    const tree = buildTree(currentWindows)
+    return calculateLayout(tree, 0, 0, width, height)
+  }, [currentWindows])
 
   const isModPressed = useRef(false)
 
@@ -58,13 +78,17 @@ function Preview() {
         }}
       >
         <StatusBar />
-        <button
-          onClick={() => openWindow("terminal")}
-          className="p-2 bg-slate-800"
-        ></button>
-        <div>
+
+        <div ref={containerRef}>
           {currentWindows.map(win => (
-            <Window key={win.id} windowData={win}>
+            <Window key={win.id} windowData={{
+              ...win,
+              position: { x: layout[win.id]?.x ?? 0, y: layout[win.id]?.y ?? 0 },
+              size: {
+                width: layout[win.id]?.width ?? 300,
+                height: layout[win.id]?.width ?? 200
+              }
+            }}>
               {win.type === "terminal" && <Terminal />}
             </Window>
           ))}
