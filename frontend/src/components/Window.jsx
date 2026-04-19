@@ -15,10 +15,8 @@ export function Window({ windowData, children }) {
 
     useEffect(() => {
         const handleKeyDown = (e) => {
-            console.log("Key down")
             if (e.key === "z") {
                 isModPressed.current = true
-                console.log("mod")
             }
         }
         const handleKeyUp = (e) => {
@@ -73,19 +71,19 @@ export function Window({ windowData, children }) {
 
     return (
         <div
-            className={`grid relative overflow-hidden transition-shadow ${isFocused ? "shadow-lg shadow-[#89b4fa]/20" : "opacity-80"}
-        ${isFocused.current ? "cursor-grab" : "cursor-default"}
+            className={`flex absolute  overflow-auto transition-shadow ${isFocused ? "shadow-lg shadow-[#89b4fa]/20" : "opacity-80"}
+        ${isModPressed.current && "cursor-grab"}
         `}
             style={{
-                left: pos.x,
-                top: pos.y,
+                left: position.x,
+                top: position.y,
                 width: size.width,
                 height: size.height,
                 zIndex: isFocused ? 10 : 1,
                 border: `${borderWidth}px solid ${isFocused ? borderColor : "#4a4a6a"}`,
                 borderRadius: `${borderRadius}px`
             }}
-            onMouseDown={handleMouseDown}
+            onMouseEnter={handleMouseDown}
         >
             {children}
         </div>

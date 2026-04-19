@@ -9,7 +9,8 @@ const hexToRgba = (hex, opacity) => {
 };
 
 export function StatusBar() {
-    const { config } = useConfig();
+    const { config, desktopState, switchDesktop } = useConfig();
+    const { activeDesktop } = desktopState
     const {
         background,
         backgroundOpacity,
@@ -34,8 +35,6 @@ export function StatusBar() {
         [borderColor, borderOpacity]
     );
 
-    const [activeDesktop, setActiveDesktop] = useState(1);
-    const desktops = [1, 2, 3, 4];
 
     const [time, setTime] = useState(new Date());
     useEffect(() => {
@@ -60,14 +59,9 @@ export function StatusBar() {
             }}
         >
             <div className="flex-1">
-                {desktops.map(desktop => (
-                    <button
-                        key={desktop}
-                        onClick={() => setActiveDesktop(desktop)}
-                        className={`px-2 py-1 border border-gray-800/50 rounded-lg ${activeDesktop === desktop ? "bg-blue-500/70" : "bg-gray-800/50"}`}
-                    >
-                        {desktop}
-                    </button>
+                {[1, 2, 3, 4, 5, 6, 7, 8, 9].map(desktop => (
+                    $({ if(desktop[desktop].windows.length > 0)})
+                    
                 ))}
             </div>
 

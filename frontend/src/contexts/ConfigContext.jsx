@@ -34,16 +34,7 @@ const defaultConfig = {
 const defaultDesktopState = {
     activeDesktop: 1,
     desktops: {
-        1: { windows: [] },
-        2: { windows: [] },
-        3: { windows: [] },
-        4: { windows: [] },
-        5: { windows: [] },
-        6: { windows: [] },
-        7: { windows: [] },
-        8: { windows: [] },
-        9: { windows: [] },
-        10: { windows: [] }
+        1: { windows: [] }
     }
 }
 // // Una ventana se ve así:
@@ -89,28 +80,42 @@ export function ConfigProvider({ children }) {
             desktops: {
                 ...prev.desktops,
                 [prev.activeDesktop]: {
-                    windows: [...prev.desktops[prev.activeDesktop].windows, newWindow]
+                    windows: [...prev.desktops[prev.activeDesktop].windows.map(w => ({
+                        ...w,
+                        isFocused: false
+                    })),
+                        newWindow]
                 }
             }
         }))
     }
-    // Action for closing a window
-    const closeWindow = (windowId) => {
-        setDesktopState(prev => ({
-            ...prev,
-            desktops: {
-                ...prev.desktops,
-                [prev.activeDesktop]: {
-                    windows: prev.desktops[prev.activeDesktop].windows.filter(w => w.id !== windowId)
-                }
-            }
-        }))
-    }
-    // Function to get the window to close
+    // // Close a window and asign focus to the closest one
     const closeFocusedWindow = () => {
-        const windows = desktopState.desktops[desktopState.activeDesktop].windows
-        const focused = windows.find(w => w.isFocused)
-        if (focused) closeWindow(focused.id)
+        setDesktopState(prev => {
+            const windows = prev.desktops[prev.activeDesktop].windows
+            const focusedIndex = windows.findIndex(w => w.isFocused)
+
+            if (focusedIndex === -1) return prev
+
+            const remaining = windows.filter((_, i) => i !== focusedIndex)
+
+            const nextFocusIndex = focusedIndex > 0 ? focusedIndex - 1 : 0
+
+            const updatedWindows = remaining.map((w, i) => ({
+                ...w,
+                isFocused: i === nextFocusIndex
+            }))
+
+            return {
+                ...prev,
+                desktops: {
+                    ...prev.desktops,
+                    [prev.activeDesktop]: {
+                        windows: updatedWindows
+                    }
+                }
+            }
+        })
     }
     // Action for focus a window
     const focusWindow = (windowId) => {
@@ -153,7 +158,7 @@ export function ConfigProvider({ children }) {
             desktopState,
             // Desktop actions
             openWindow,
-            closeWindow,
+            //closeWindow,
             closeFocusedWindow,
             focusWindow,
             switchDesktop,

@@ -14,7 +14,7 @@ function insertWindow(node, newLeaf) {
         right: insertWindow(node.right, newLeaf)
     }
 }
-function buildTree(windows) {
+export function buildTree(windows) {
     // Without windows we dont create the tree
     if (windows.length === 0) return null
 
@@ -44,6 +44,11 @@ export function calculateLayout(node, x, y, width, height, depth = 0) {
     const leftSpace = isHorizontal
         ? { x, y, width: width / 2, height } // Divide the width
         : { x, y, width, height: height / 2 } // Divide the height
+
+    // Calculates the space for each right child
+    const rightSpace = isHorizontal
+        ? { x: x + width / 2, y, width: width / 2, height }
+        : { x, y: y + height / 2, width, height: height / 2 }
 
     return {
         ...calculateLayout(node.left, leftSpace.x, leftSpace.y, leftSpace.width, leftSpace.height, depth + 1),
