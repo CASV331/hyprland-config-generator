@@ -34,7 +34,16 @@ const defaultConfig = {
 const defaultDesktopState = {
     activeDesktop: 1,
     desktops: {
-        1: { windows: [] }
+        1: { windows: [] },
+        2: { windows: [] },
+        3: { windows: [] },
+        4: { windows: [] },
+        5: { windows: [] },
+        6: { windows: [] },
+        7: { windows: [] },
+        8: { windows: [] },
+        9: { windows: [] }
+
     }
 }
 // // Una ventana se ve así:
@@ -144,10 +153,19 @@ export function ConfigProvider({ children }) {
             }
         }))
     }
+    // Move windows between desktops
+    const switchWindowDesktop = (desktopNumber) => {
+        setDesktopState(prev => {
+            const window = prev.desktops[prev.activeDesktop].windows
+            console.log(window)
+
+        })
+    }
     // Switch between desktops
     const switchDesktop = (desktopNumber) => {
         setDesktopState(prev => ({ ...prev, activeDesktop: desktopNumber }))
     }
+
 
     return (
         <ConfigContext.Provider value={{
@@ -162,7 +180,8 @@ export function ConfigProvider({ children }) {
             closeFocusedWindow,
             focusWindow,
             switchDesktop,
-            moveWindow
+            moveWindow,
+            switchWindowDesktop
         }}>
             {children}
         </ConfigContext.Provider>

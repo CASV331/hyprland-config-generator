@@ -10,7 +10,7 @@ const hexToRgba = (hex, opacity) => {
 
 export function StatusBar() {
     const { config, desktopState, switchDesktop } = useConfig();
-    const { activeDesktop } = desktopState
+    const { activeDesktop, desktops } = desktopState
     const {
         background,
         backgroundOpacity,
@@ -59,10 +59,19 @@ export function StatusBar() {
             }}
         >
             <div className="flex-1">
-                {[1, 2, 3, 4, 5, 6, 7, 8, 9].map(desktop => (
-                    $({ if(desktop[desktop].windows.length > 0)})
-                    
-                ))}
+                {[1, 2, 3, 4, 5, 6, 7, 8, 9].filter(desktop =>
+                    desktops[desktop].windows.length > 0 || desktop === activeDesktop
+                )
+                    .map(desktop => (
+                        <button
+                            key={desktop}
+                            onClick={() => switchDesktop(desktop)}
+                            className={`px-2 py-1 border rounded-lg ${activeDesktop === desktop ? "bg-blue-500/70 border-blue-400/50" : "bg-gray-800750 border-gray-600/50"}`}
+                        >
+                            {desktop}
+                        </button>
+                    ))
+                }
             </div>
 
             <div className="flex-1 text-center font-mono">

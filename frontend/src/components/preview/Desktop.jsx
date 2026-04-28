@@ -6,8 +6,9 @@ import { useEffect, useRef, useState, useMemo } from "react";
 import { calculateLayout, buildTree } from "../Tiling";
 
 function Preview() {
-  const { desktopState, openWindow, closeFocusedWindow, focusWindow } = useConfig()
+  const { desktopState, openWindow, closeFocusedWindow, focusWindow, switchDesktop, switchWindowDesktop } = useConfig()
   const { activeDesktop, desktops } = desktopState
+  console.log(desktops)
   const currentWindows = desktops[activeDesktop].windows
 
   const [containerSize, setContainerSize] = useState({ width: 0, height: 0 })
@@ -58,7 +59,9 @@ function Preview() {
     })
     focusWindow(closest.id)
   }
+
   const moveFocusRef = useRef(moveFocus)
+
   useEffect(() => {
     moveFocusRef.current = moveFocus
   }, [moveFocus])
@@ -79,9 +82,13 @@ function Preview() {
   }, [currentWindows, containerSize])
 
   const isModPressed = useRef(false)
+  const isShiftPressed = useRef(false)
 
   useEffect(() => {
     const handleKeyDown = (e) => {
+      if (e.key === "p") {
+        isShiftPressed.current = true
+      }
       if (e.key === "z") {
         isModPressed.current = true
       }
@@ -101,8 +108,10 @@ function Preview() {
         if (e.key === "ArrowDown") moveFocusRef.current("down")
 
         const num = parseInt(e.key)
+
         if (num >= 1 && num < 9) {
           e.preventDefault()
+          if (isShiftPressed.current) switchWindowDesktop(num)
           switchDesktop(num)
         }
       }
@@ -110,6 +119,8 @@ function Preview() {
     const handleKeyUp = (e) => {
       if (e.key === "z")
         isModPressed.current = false
+      if (e.key === "Shift")
+        isShiftPressed.current = false
     }
 
     window.addEventListener("keydown", handleKeyDown)
@@ -133,7 +144,7 @@ function Preview() {
       >
         <StatusBar />
 
-        <div ref={containerRef} className="relative flex-1 w-full">
+        <div ref={containerRef} className="relative flex-1 w-full mt-5">
           {currentWindows.map(win => (
             <Window key={win.id} windowData={{
               ...win,
