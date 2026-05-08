@@ -8,7 +8,6 @@ import { calculateLayout, buildTree } from "../Tiling";
 function Preview() {
   const { desktopState, openWindow, closeFocusedWindow, focusWindow, switchDesktop, switchWindowDesktop } = useConfig()
   const { activeDesktop, desktops } = desktopState
-  console.log(desktops)
   const currentWindows = desktops[activeDesktop].windows
 
   const [containerSize, setContainerSize] = useState({ width: 0, height: 0 })
@@ -111,16 +110,19 @@ function Preview() {
 
         if (num >= 1 && num < 9) {
           e.preventDefault()
-          if (isShiftPressed.current) switchWindowDesktop(num)
-          switchDesktop(num)
+          if (isShiftPressed.current) {
+            switchWindowDesktop(num)
+          } else {
+            switchDesktop(num)
+          }
         }
       }
     }
     const handleKeyUp = (e) => {
-      if (e.key === "z")
+      if (e.key === "z") {
         isModPressed.current = false
-      if (e.key === "Shift")
         isShiftPressed.current = false
+      }
     }
 
     window.addEventListener("keydown", handleKeyDown)

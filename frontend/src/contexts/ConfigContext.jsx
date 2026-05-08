@@ -156,8 +156,34 @@ export function ConfigProvider({ children }) {
     // Move windows between desktops
     const switchWindowDesktop = (desktopNumber) => {
         setDesktopState(prev => {
-            const window = prev.desktops[prev.activeDesktop].windows
-            console.log(window)
+            const windows = prev.desktops[prev.activeDesktop].windows
+            const focusedIndex = windows.findIndex(w => w.isFocused)
+
+            if (focusedIndex === -1) return prev
+
+            const focused = windows[focusedIndex]
+
+            const remaining = windows.filter((_, i) => i !== focusedIndex)
+
+            const nextFocusIndex = focusedIndex > 0 ? focusedIndex - 1 : 0
+
+            const updatedWindows = remaining.map((w, i) => ({
+                ...w,
+                isFocused: i === nextFocusIndex
+            }))
+
+            return {
+                ...prev,
+                desktops: {
+                    ...prev.desktops,
+                    [desktopNumber]: {
+                        windows: [...prev.desktops[desktopNumber].windows, { ...focused, isFocused: false }]
+                    },
+                    [prev.activeDesktop]: {
+                        windows: updatedWindows
+                    }
+                }
+            }
 
         })
     }
