@@ -49,7 +49,7 @@ export function StatusBar() {
 
     return (
         <div
-            className="rounded-lg flex gap-1 justify-between items-center"
+            className="rounded-b-md flex items-center"
             style={{
                 backgroundColor: bgColor,
                 border: `${borderWidth}px solid ${borderColorRgba}`,
@@ -58,7 +58,7 @@ export function StatusBar() {
                 margin: `${marginTop}px ${marginRight}px ${marginBottom}px ${marginLeft}px`,
             }}
         >
-            <div className="flex-1">
+            <div className="modules-left">
                 {[1, 2, 3, 4, 5, 6, 7, 8, 9].filter(desktop =>
                     desktops[desktop].windows.length > 0 || desktop === activeDesktop
                 )

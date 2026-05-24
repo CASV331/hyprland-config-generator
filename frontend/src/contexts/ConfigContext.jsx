@@ -1,12 +1,16 @@
+import { useReducer } from "react";
 import { createContext, useContext, useState } from "react";
+import { generateThemeFromImage } from "../system/theme/generateTheme.js";
+import { applyTheme } from "../system/theme/applyTheme.js";
+import { desktopReducer } from "./reducers/desktopReducer.js"
 
 const defaultConfig = {
     statusBar: {
         background: "#80b4f4",
-        backgroundOpacity: 0.8,
+        backgroundOpacity: 0.6,
         borderColor: "#89b4fa",
         borderOpacity: 0.8,
-        borderWidth: 1,
+        borderWidth: 0,
         textColor: "#cdd6f4",
         fontSize: 11,
         marginTop: 0,
@@ -28,6 +32,10 @@ const defaultConfig = {
         borderWidth: 2,
         borderRadius: 8,
         gap: 4
+    },
+    wallpaper: {
+        url: "/sunset-anime.jpg",
+        dominant: "1e1e2e"
     }
 };
 
@@ -46,22 +54,12 @@ const defaultDesktopState = {
 
     }
 }
-// // Una ventana se ve así:
-// {
-//   id: "win_1",
-//   type: "terminal",  // en el futuro: "browser", "filemanager", etc.
-//   position: { x: 50, y: 50 },
-//   size: { width: 400, height: 300 },
-//   isMinimized: false,
-//   isFocused: true,
-//   history: [],       // comandos ejecutados
-// }
 
 const ConfigContext = createContext(null);
 
 export function ConfigProvider({ children }) {
     const [config, setConfig] = useState(defaultConfig);
-    const [desktopState, setDesktopState] = useState(defaultDesktopState)
+    const [desktopState, dispatch] = useReducer(desktopReducer, defaultDesktopState)
 
     const updateConfig = (section, key, value) => {
         setConfig(prev => ({
@@ -72,125 +70,51 @@ export function ConfigProvider({ children }) {
             }
         }))
     }
-    // Action for opening a window
-    const openWindow = (type) => {
-        const newWindow = {
-            id: `win_${Date.now()}`,
-            type,
-            position: { x: 50 + Math.random() * 100, y: 50 + Math.random() * 50 },
-            size: { width: 400, height: 300 },
-            isMinimized: false,
-            isFocused: true,
-            history: []
+
+    const openWindow = (type) => dispatch({
+        type: "WINDOW_OPEN",
+        payload: { type }
+    })
+
+    const closeFocusedWindow = () => dispatch({
+        type: "WINDOW_CLOSE"
+    })
+
+    const focusWindow = (windowId) => dispatch({
+        type: "WINDOW_FOCUS",
+        payload: { windowId }
+    })
+
+    const moveWindow = (windowId, position) => dispatch({
+        type: "MOVE_WINDOW",
+        payload: { windowId, position }
+    })
+
+    const switchWindowDesktop = (desktopNumber) => dispatch({
+        type: "WINDOW_SWITCH_DESKTOP",
+        payload: { desktopNumber }
+    })
+
+    const switchDesktop = (desktopNumber) => dispatch({
+        type: "DESKTOP_SWITCH",
+        payload: { desktopNumber }
+    })
+
+    const setWallpaperTheme = async (imgFile) => {
+        try {
+            const generatedTheme = await generateThemeFromImage(imgFile);
+
+            setConfig(prev => ({
+                ...prev,
+                ...generatedTheme
+            }));
+
+            applyTheme(generatedTheme);
+
+        } catch (error) {
+            console.error("Theme generation failed: ", error);
         }
-
-        setDesktopState(prev => ({
-            ...prev,
-            desktops: {
-                ...prev.desktops,
-                [prev.activeDesktop]: {
-                    windows: [...prev.desktops[prev.activeDesktop].windows.map(w => ({
-                        ...w,
-                        isFocused: false
-                    })),
-                        newWindow]
-                }
-            }
-        }))
-    }
-    // // Close a window and asign focus to the closest one
-    const closeFocusedWindow = () => {
-        setDesktopState(prev => {
-            const windows = prev.desktops[prev.activeDesktop].windows
-            const focusedIndex = windows.findIndex(w => w.isFocused)
-
-            if (focusedIndex === -1) return prev
-
-            const remaining = windows.filter((_, i) => i !== focusedIndex)
-
-            const nextFocusIndex = focusedIndex > 0 ? focusedIndex - 1 : 0
-
-            const updatedWindows = remaining.map((w, i) => ({
-                ...w,
-                isFocused: i === nextFocusIndex
-            }))
-
-            return {
-                ...prev,
-                desktops: {
-                    ...prev.desktops,
-                    [prev.activeDesktop]: {
-                        windows: updatedWindows
-                    }
-                }
-            }
-        })
-    }
-    // Action for focus a window
-    const focusWindow = (windowId) => {
-        setDesktopState(prev => ({
-            ...prev,
-            desktops: {
-                ...prev.desktops,
-                [prev.activeDesktop]: {
-                    windows: prev.desktops[prev.activeDesktop].windows.map(w => ({
-                        ...w,
-                        isFocused: w.id === windowId
-                    }))
-                }
-            }
-        }))
-    }
-    // Action for moving a window
-    const moveWindow = (windowId, newPosition) => {
-        setDesktopState(prev => ({
-            ...prev,
-            desktops: {
-                ...prev.desktops,
-                [prev.activeDesktop]: {
-                    windows: prev.desktops[prev.activeDesktop].windows.map(w => w.id === windowId ? { ...w, position: newPosition } : w)
-                }
-            }
-        }))
-    }
-    // Move windows between desktops
-    const switchWindowDesktop = (desktopNumber) => {
-        setDesktopState(prev => {
-            const windows = prev.desktops[prev.activeDesktop].windows
-            const focusedIndex = windows.findIndex(w => w.isFocused)
-
-            if (focusedIndex === -1) return prev
-
-            const focused = windows[focusedIndex]
-
-            const remaining = windows.filter((_, i) => i !== focusedIndex)
-
-            const nextFocusIndex = focusedIndex > 0 ? focusedIndex - 1 : 0
-
-            const updatedWindows = remaining.map((w, i) => ({
-                ...w,
-                isFocused: i === nextFocusIndex
-            }))
-
-            return {
-                ...prev,
-                desktops: {
-                    ...prev.desktops,
-                    [desktopNumber]: {
-                        windows: [...prev.desktops[desktopNumber].windows, { ...focused, isFocused: false }]
-                    },
-                    [prev.activeDesktop]: {
-                        windows: updatedWindows
-                    }
-                }
-            }
-
-        })
-    }
-    // Switch between desktops
-    const switchDesktop = (desktopNumber) => {
-        setDesktopState(prev => ({ ...prev, activeDesktop: desktopNumber }))
-    }
+    };
 
 
     return (
@@ -207,7 +131,8 @@ export function ConfigProvider({ children }) {
             focusWindow,
             switchDesktop,
             moveWindow,
-            switchWindowDesktop
+            switchWindowDesktop,
+            setWallpaperTheme
         }}>
             {children}
         </ConfigContext.Provider>

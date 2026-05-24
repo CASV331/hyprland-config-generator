@@ -11,6 +11,9 @@ importers:
       '@tailwindcss/vite':
         specifier: ^4.1.18
         version: 4.1.18(vite@7.2.4(jiti@2.6.1)(lightningcss@1.30.2))
+      material-dynamic-colors:
+        specifier: ^1.1.4
+        version: 1.1.4
       react:
         specifier: ^19.2.0
         version: 19.2.0
@@ -343,6 +346,9 @@ packages:
 
   '@jridgewell/trace-mapping@0.3.31':
     resolution: {integrity: sha512-zzNR+SdQSDJzc8joaeP8QQoCQr8NuYx2dIIytl1QeBEZHJ9uW6hebsrYgbz8hJwUQao3TWCMtmfV8Nu1twOLAw==}
+
+  '@material/material-color-utilities@0.3.0':
+    resolution: {integrity: sha512-ztmtTd6xwnuh2/xu+Vb01btgV8SQWYCaK56CkRK8gEkWe5TuDyBcYJ0wgkMRn+2VcE9KUmhvkz+N9GHrqw/C0g==}
 
   '@rolldown/pluginutils@1.0.0-beta.47':
     resolution: {integrity: sha512-8QagwMH3kNCuzD8EWL8R2YPW5e4OrHNSAHRFDdmFqEwEaD/KcNKjVoumo+gP2vW5eKB2UPbM6vTYiGZX0ixLnw==}
@@ -1007,6 +1013,10 @@ packages:
   magic-string@0.30.21:
     resolution: {integrity: sha512-vd2F4YUyEXKGcLHoq+TEyCjxueSeHnFxyyjNp80yg0XV4vUhnDer/lvvlqM/arB5bXQN5K2/3oinyCRyx8T2CQ==}
 
+  material-dynamic-colors@1.1.4:
+    resolution: {integrity: sha512-0HnLNoxDC/+pCTfhOgvSeqQKXO8n6PLO1D3IwtYr0Gg2SR2pGxft5nNngajVvtEADzXtxWvinmTdig+lUJqkxg==}
+    hasBin: true
+
   minimatch@3.1.2:
     resolution: {integrity: sha512-J7p63hRiAjw1NDEww1W7i37+ByIrOWO5XQQAzZ3VOcL0PNybwpfmV/N05zFAzwQ9USyEcX6t3UO+K5aqBQOIHw==}
 
@@ -1456,6 +1466,8 @@ snapshots:
     dependencies:
       '@jridgewell/resolve-uri': 3.1.2
       '@jridgewell/sourcemap-codec': 1.5.5
+
+  '@material/material-color-utilities@0.3.0': {}
 
   '@rolldown/pluginutils@1.0.0-beta.47': {}
 
@@ -2014,6 +2026,10 @@ snapshots:
   magic-string@0.30.21:
     dependencies:
       '@jridgewell/sourcemap-codec': 1.5.5
+
+  material-dynamic-colors@1.1.4:
+    dependencies:
+      '@material/material-color-utilities': 0.3.0
 
   minimatch@3.1.2:
     dependencies:
