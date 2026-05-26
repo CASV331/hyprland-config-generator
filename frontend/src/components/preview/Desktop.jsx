@@ -6,7 +6,7 @@ import { useEffect, useRef, useState, useMemo } from "react";
 import { calculateLayout, buildTree } from "../Tiling";
 
 function Preview() {
-  const { desktopState, openWindow, closeFocusedWindow, focusWindow, switchDesktop, switchWindowDesktop } = useConfig()
+  const { config, desktopState, openWindow, closeFocusedWindow, focusWindow, switchDesktop, switchWindowDesktop } = useConfig()
   const { activeDesktop, desktops } = desktopState
   const currentWindows = desktops[activeDesktop].windows
 

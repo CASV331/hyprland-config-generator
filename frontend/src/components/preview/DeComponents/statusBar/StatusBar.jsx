@@ -48,39 +48,50 @@ export function StatusBar() {
     });
 
     return (
-        <div
-            className="rounded-b-md flex items-center"
-            style={{
-                backgroundColor: bgColor,
-                border: `${borderWidth}px solid ${borderColorRgba}`,
-                color: textColor,
-                fontSize: `${fontSize}px`,
-                margin: `${marginTop}px ${marginRight}px ${marginBottom}px ${marginLeft}px`,
-            }}
-        >
-            <div className="modules-left">
-                {[1, 2, 3, 4, 5, 6, 7, 8, 9].filter(desktop =>
-                    desktops[desktop].windows.length > 0 || desktop === activeDesktop
-                )
-                    .map(desktop => (
-                        <button
-                            key={desktop}
-                            onClick={() => switchDesktop(desktop)}
-                            className={`px-2 py-1 border rounded-lg ${activeDesktop === desktop ? "bg-blue-500/70 border-blue-400/50" : "bg-gray-800750 border-gray-600/50"}`}
-                        >
-                            {desktop}
-                        </button>
-                    ))
-                }
-            </div>
+        <div className="rounded-b-md items-center">
+            <div
+                className="rounded-b-[15px] flex items-center justify-between"
+                style={{
+                    backgroundColor: bgColor,
+                    border: `${borderWidth}px solid ${borderColorRgba}`,
+                    color: textColor,
+                    fontSize: `${fontSize}px`,
+                    margin: `${marginTop}px ${marginRight}px ${marginBottom}px ${marginLeft}px`,
+                }}
+            >
+                <div classname="w-1/3 p-0.5 rounded-lg">
+                    <div className="px-1 py-2">
+                        {[1, 2, 3, 4, 5, 6, 7, 8, 9].filter(desktop =>
+                            desktops[desktop].windows.length > 0 || desktop === activeDesktop
+                        )
+                            .map(desktop => (
+                                <button
+                                    key={desktop}
+                                    onClick={() => switchDesktop(desktop)}
+                                    className={`px-2 py-1 border rounded-lg ${activeDesktop === desktop ? "bg-blue-500/70 border-blue-400/50" : "bg-gray-800750 border-gray-600/50"}`}
+                                >
+                                    {desktop}
+                                </button>
+                            ))
+                        }
+                    </div>
+                </div>
 
-            <div className="flex-1 text-center font-mono">
-                {formattedTime}
-            </div>
+                <div className="flex w-1/3 justify-center">
+                    <div className="max-w-18 text-center p-x-[14px] p-y-[4px] rounded-lg font-mono font-bold"
+                        style={{
+                            backgroundColor: bgColor,
+                        }}>
+                        {formattedTime}
+                    </div>
+                </div>
 
-            <div className="flex-1 text-right pr-2">
-                system tray
-            </div>
-        </div >
+                <div className="flex w-1/3 justify-center">
+                    <div classname="text-center pr-2">
+                        System tray
+                    </div>
+                </div>
+            </div >
+        </div>
     );
 }

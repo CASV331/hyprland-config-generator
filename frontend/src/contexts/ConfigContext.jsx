@@ -101,19 +101,17 @@ export function ConfigProvider({ children }) {
     })
 
     const setWallpaperTheme = async (imgFile) => {
-        try {
-            const generatedTheme = await generateThemeFromImage(imgFile);
+        const url = URL.createObjectURL(imgFile)
 
-            setConfig(prev => ({
-                ...prev,
-                ...generatedTheme
-            }));
+        const generatedTheme = await generateThemeFromImage(imgFile)
 
-            applyTheme(generatedTheme);
-
-        } catch (error) {
-            console.error("Theme generation failed: ", error);
-        }
+        setConfig(prev => ({
+            ...prev,
+            wallpaper: { url },
+            statusBar: { ...prev.statusBar, ...generatedTheme.statusBar },
+            terminal: { ...prev.terminal, ...generatedTheme.terminal },
+            window: { ...prev.window, ...generatedTheme.window },
+        }))
     };
 
 
