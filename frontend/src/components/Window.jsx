@@ -3,7 +3,7 @@ import { useConfig } from "../contexts/ConfigContext"
 
 export function Window({ windowData, children }) {
     const { config, focusWindow, closeFocusedWindow, moveWindow, openWindow } = useConfig()
-    const { borderColor, borderWidth, borderRadius } = config.window
+    const { borderColor, borderColorUnfocused, borderWidth, borderRadius } = config.window
 
     const { id, position, size, isFocused } = windowData
     const [pos, setPos] = useState(position)
@@ -80,7 +80,7 @@ export function Window({ windowData, children }) {
                 width: size.width,
                 height: size.height,
                 zIndex: isFocused ? 10 : 1,
-                border: `${borderWidth}px solid ${isFocused ? borderColor : "#4a4a6a"}`,
+                border: `${borderWidth}px solid ${isFocused ? borderColor : borderColorUnfocused}`,
                 borderRadius: `${borderRadius}px`
             }}
             onMouseEnter={handleMouseDown}

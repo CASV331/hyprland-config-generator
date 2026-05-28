@@ -3,6 +3,7 @@ import { createContext, useContext, useState } from "react";
 import { generateThemeFromImage } from "../system/theme/generateTheme.js";
 import { applyTheme } from "../system/theme/applyTheme.js";
 import { desktopReducer } from "./reducers/desktopReducer.js"
+import { saveTheme } from "../system/theme/themeStorage.js";
 
 const defaultConfig = {
     statusBar: {
@@ -34,7 +35,7 @@ const defaultConfig = {
         gap: 4
     },
     wallpaper: {
-        url: "/sunset-anime.jpg",
+        url: "/image.png",
         dominant: "1e1e2e"
     }
 };
@@ -57,8 +58,8 @@ const defaultDesktopState = {
 
 const ConfigContext = createContext(null);
 
-export function ConfigProvider({ children }) {
-    const [config, setConfig] = useState(defaultConfig);
+export function ConfigProvider({ children, initialConfig }) {
+    const [config, setConfig] = useState(initialConfig ?? defaultConfig);
     const [desktopState, dispatch] = useReducer(desktopReducer, defaultDesktopState)
 
     const updateConfig = (section, key, value) => {
@@ -103,7 +104,8 @@ export function ConfigProvider({ children }) {
     const setWallpaperTheme = async (imgFile) => {
         const url = URL.createObjectURL(imgFile)
 
-        const generatedTheme = await generateThemeFromImage(imgFile)
+        const theme = await generateThemeFromImage(imgFile)
+        saveTheme(theme)
 
         setConfig(prev => ({
             ...prev,
@@ -120,6 +122,7 @@ export function ConfigProvider({ children }) {
             // Appearance config
             config,
             updateConfig,
+            defaultConfig,
             // Desktop state
             desktopState,
             // Desktop actions

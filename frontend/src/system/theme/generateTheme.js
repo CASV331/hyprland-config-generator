@@ -13,8 +13,7 @@ export async function generateThemeFromImage(image) {
             backgroundOpacity: 0.6,
             borderColor: palette.dark.primary,
             borderOpacity: 1,
-
-            textColor: palette.dark.onSurface,
+            textColor: palette.dark.onBackground,
         },
 
         terminal: {
@@ -25,8 +24,9 @@ export async function generateThemeFromImage(image) {
             textColor: palette.dark.onBackground,
         },
 
-        window: { 
+        window: {
             borderColor: palette.dark.primary,
+            borderColorUnfocused: palette.dark.outline,
             borderWidth: 2,
             borderRadius: 8,
             gap: 4
