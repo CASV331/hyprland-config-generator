@@ -1,45 +1,13 @@
 import { useReducer } from "react";
 import { createContext, useContext, useState } from "react";
-import { generateThemeFromImage } from "../system/theme/generateTheme.js";
-import { applyTheme } from "../system/theme/applyTheme.js";
+import { generateThemeFromImage } from "../core/theme/generateTheme.js";
+// import { applyTheme } from "../core/theme/applyTheme.js";
 import { desktopReducer } from "./reducers/desktopReducer.js"
-import { saveTheme } from "../system/theme/themeStorage.js";
+import { buildConfigFromTokens } from "../core/theme/buildConfig.js";
+import { defaultTokens } from "../core/theme/themeTokens.js"
+import { fileToBase64, loadTheme, saveTheme, saveUserWallpaper } from "../core/theme/themeStorage.js"
 
-const defaultConfig = {
-    statusBar: {
-        background: "#80b4f4",
-        backgroundOpacity: 0.6,
-        borderColor: "#89b4fa",
-        borderOpacity: 0.8,
-        borderWidth: 0,
-        textColor: "#cdd6f4",
-        fontSize: 11,
-        marginTop: 0,
-        marginBottom: 0,
-        marginLeft: 0,
-        marginRight: 0
-    },
-    terminal: {
-        background: "#1e1e2e",
-        backgroundOpacity: 0.8,
-        borderColor: "#89b4fa",
-        borderOpacity: 0.8,
-        borderWidth: 1,
-        textColor: "#cdd6f4",
-        fontSize: 11,
-    },
-    window: {
-        borderColor: "#89b4fa",
-        borderWidth: 2,
-        borderRadius: 8,
-        gap: 4
-    },
-    wallpaper: {
-        url: "/image.png",
-        dominant: "1e1e2e"
-    }
-};
-
+// const initialConfig = buildConfigFromTheme(defaultTokens)
 const defaultDesktopState = {
     activeDesktop: 1,
     desktops: {
@@ -58,8 +26,21 @@ const defaultDesktopState = {
 
 const ConfigContext = createContext(null);
 
-export function ConfigProvider({ children, initialConfig }) {
-    const [config, setConfig] = useState(initialConfig ?? defaultConfig);
+function getInitialConfig() {
+    const saved = loadTheme()
+
+    if (saved) {
+        return buildConfigFromTokens(
+            saved.colors ?? defaultTokens,
+            saved.wallpaperURL
+        )
+    }
+
+    return buildConfigFromTokens(defaultTokens)
+}
+
+export function ConfigProvider({ children }) {
+    const [config, setConfig] = useState(getInitialConfig);
     const [desktopState, dispatch] = useReducer(desktopReducer, defaultDesktopState)
 
     const updateConfig = (section, key, value) => {
@@ -101,19 +82,31 @@ export function ConfigProvider({ children, initialConfig }) {
         payload: { desktopNumber }
     })
 
-    const setWallpaperTheme = async (imgFile) => {
-        const url = URL.createObjectURL(imgFile)
+    const setWallpaperTheme = async (source, name) => {
+        try {
+            let url
+            if (source instanceof File) {
+                url = await fileToBase64(source)
+                saveUserWallpaper(name ?? source.name, url)
+            } else {
+                url = source
+            }
 
-        const theme = await generateThemeFromImage(imgFile)
-        saveTheme(theme)
+            const generatedTheme = await generateThemeFromImage(url)
 
-        setConfig(prev => ({
-            ...prev,
-            wallpaper: { url },
-            statusBar: { ...prev.statusBar, ...generatedTheme.statusBar },
-            terminal: { ...prev.terminal, ...generatedTheme.terminal },
-            window: { ...prev.window, ...generatedTheme.window },
-        }))
+            saveTheme(generatedTheme, url)
+
+            setConfig(prev => ({
+                ...prev,
+                wallpaper: { url },
+                statusBar: { ...prev.statusBar, ...generatedTheme.statusBar },
+                terminal: { ...prev.terminal, ...generatedTheme.terminal },
+                window: { ...prev.window, ...generatedTheme.window },
+                colors: { ...prev.colors, ...generatedTheme.colors }
+            }))
+        } catch (error) {
+            console.error("Theme generation failed: ", error)
+        }
     };
 
 
@@ -122,12 +115,11 @@ export function ConfigProvider({ children, initialConfig }) {
             // Appearance config
             config,
             updateConfig,
-            defaultConfig,
+            // defaultConfig,
             // Desktop state
             desktopState,
             // Desktop actions
             openWindow,
-            //closeWindow,
             closeFocusedWindow,
             focusWindow,
             switchDesktop,

@@ -1,6 +1,12 @@
 import materialDynamicColors from "material-dynamic-colors";
 
-export async function generateThemeFromImage(image) {
+export async function generateThemeFromImage(source) {
+    let image = source
+
+    if (typeof source === "string") {
+        image = await loadImageFromURL(source)
+    }
+
     const palette = await materialDynamicColors(image)
 
     return {
@@ -9,7 +15,7 @@ export async function generateThemeFromImage(image) {
         },
 
         statusBar: {
-            background: palette.dark.surface,
+            background: palette.dark.background,
             backgroundOpacity: 0.6,
             borderColor: palette.dark.primary,
             borderOpacity: 1,
@@ -40,4 +46,14 @@ export async function generateThemeFromImage(image) {
             background: palette.dark.background
         }
     };
+}
+
+function loadImageFromURL(url) {
+    return new Promise((resolve, reject) => {
+        const img = new Image()
+        img.crossOrigin = "anonymous"
+        img.onload = () => resolve(img)
+        img.onerror = reject
+        img.src = url
+    })
 }

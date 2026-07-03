@@ -4,11 +4,13 @@ import { Terminal } from "./DeComponents/terminal/Terminal";
 import { StatusBar } from "./DeComponents/statusBar/StatusBar";
 import { useEffect, useRef, useState, useMemo } from "react";
 import { calculateLayout, buildTree } from "../Tiling";
+import { WallpaperDmenu } from "../../features/menu/menu";
 
 function Preview() {
   const { config, desktopState, openWindow, closeFocusedWindow, focusWindow, switchDesktop, switchWindowDesktop } = useConfig()
   const { activeDesktop, desktops } = desktopState
   const currentWindows = desktops[activeDesktop].windows
+  const [dmenuOpen, setDmenuOpen] = useState(false)
 
   const [containerSize, setContainerSize] = useState({ width: 0, height: 0 })
 
@@ -92,13 +94,17 @@ function Preview() {
         isModPressed.current = true
       }
       if (isModPressed.current) {
-        if (e.key === "q") {
+        if (e.key === "Enter") {
           e.preventDefault()
           openWindow("terminal")
         }
-        if (e.key === "w") {
+        if (e.key === "Backspace") {
 
           closeFocusedWindow()
+        }
+        if (e.key === "d") {
+          e.preventDefault()
+          setDmenuOpen(prev => !prev)
         }
 
         if (e.key === "ArrowRight") moveFocusRef.current("right")
@@ -160,6 +166,7 @@ function Preview() {
             </Window>
           ))}
         </div>
+        <WallpaperDmenu isOpen={dmenuOpen} onClose={() => setDmenuOpen(false)} />
       </div>
     </div>
   );
