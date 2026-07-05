@@ -71,7 +71,7 @@ export function Window({ windowData, children }) {
 
     return (
         <div
-            className={`flex absolute  overflow-auto transition-shadow ${isFocused ? "shadow-lg shadow-[#89b4fa]/20" : "opacity-80"}
+            className={`flex absolute  overflow-auto 
         ${isModPressed.current && "cursor-grab"}
         `}
             style={{
@@ -81,7 +81,7 @@ export function Window({ windowData, children }) {
                 height: size.height,
                 zIndex: isFocused ? 10 : 1,
                 border: `${borderWidth}px solid ${isFocused ? borderColor : borderColorUnfocused}`,
-                borderRadius: `${borderRadius}px`
+                // borderRadius: `${borderRadius}px`
             }}
             onMouseEnter={handleMouseDown}
         >

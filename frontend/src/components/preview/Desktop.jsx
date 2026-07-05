@@ -4,7 +4,7 @@ import { Terminal } from "./DeComponents/terminal/Terminal";
 import { StatusBar } from "./DeComponents/statusBar/StatusBar";
 import { useEffect, useRef, useState, useMemo } from "react";
 import { calculateLayout, buildTree } from "../Tiling";
-import { WallpaperDmenu } from "../../features/menu/menu";
+import { ThemeDmenu } from "../../features/menu/menu";
 
 function Preview() {
   const { config, desktopState, openWindow, closeFocusedWindow, focusWindow, switchDesktop, switchWindowDesktop } = useConfig()
@@ -152,7 +152,7 @@ function Preview() {
       >
         <StatusBar />
 
-        <div ref={containerRef} className="relative flex-1 w-full mt-5">
+        <div ref={containerRef} className="relative flex-1 w-full mt-0 justify-between">
           {currentWindows.map(win => (
             <Window key={win.id} windowData={{
               ...win,
@@ -166,7 +166,7 @@ function Preview() {
             </Window>
           ))}
         </div>
-        <WallpaperDmenu isOpen={dmenuOpen} onClose={() => setDmenuOpen(false)} />
+        <ThemeDmenu isOpen={dmenuOpen} onClose={() => setDmenuOpen(false)} />
       </div>
     </div>
   );

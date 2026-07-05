@@ -32,10 +32,10 @@ export function Terminal() {
     return (
         <div className="flex-1 flex gap-4 terminal ">
             <div
-                className="flex-1 flexrounded-lg p-3 rounded-lg"
+                className="flex-1 flex p-3"
                 style={{
                     backgroundColor: bgColor,
-                    border: `${borderWidth}px solid ${borderColorRgba}`,
+                    // border: `${borderWidth}px solid ${borderColorRgba}`,
                     color: textColor,
                     fontSize: `${fontSize}px`,
                 }}

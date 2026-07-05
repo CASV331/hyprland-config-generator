@@ -4,7 +4,7 @@ import Sidebar from './components/layout/sidebar/Sidebar.jsx';
 import Preview from './components/preview/Desktop.jsx';
 import { WallpaperPicker } from './components/WallpaperPicker.jsx';
 import { ConfigProvider } from './contexts/ConfigContext.jsx';
-import { initializeTheme } from './core/theme/themeStorage.js';
+// import { initializeTheme } from './core/theme/themeStorage.js';
 import './index.css';
 import './styles/globals.css';
 function App() {

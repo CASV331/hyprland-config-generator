@@ -1,7 +1,6 @@
 import { useState, useEffect, useRef, useMemo } from "react";
 import { useConfig } from "../../contexts/ConfigContext";
-import { BUILTIN_WALLPAPERS } from "../wallpapers/wallpaper";
-import { loadUserWallpapers } from "../../core/theme/themeStorage";
+import { themes } from "../../core/theme/themeTokens";
 
 const hexToRgba = (hex, opacity) => {
   const r = parseInt(hex.slice(1, 3), 16);
@@ -10,8 +9,10 @@ const hexToRgba = (hex, opacity) => {
   return `rgba(${r}, ${g}, ${b}, ${opacity})`;
 };
 
-export function WallpaperDmenu({ isOpen, onClose }) {
-  const { config, setWallpaperTheme } = useConfig()
+export function ThemeDmenu({ isOpen, onClose }) {
+  const { config, setTheme } = useConfig()
+  const [query, setQuery] = useState("")
+  const inputRef = useRef(null)
 
   const {
     background,
@@ -23,31 +24,8 @@ export function WallpaperDmenu({ isOpen, onClose }) {
     fontSize
   } = config.terminal
 
-  const inputRef = useRef(null)
-
-  const [query, setQuery] = useState("")
-  const [userWallpapers, setUserWallpapers] = useState(loadUserWallpapers)
-
-  const allWallpapers = [...BUILTIN_WALLPAPERS, ...userWallpapers]
-
-
-  const filtered = allWallpapers.filter(w =>
-    w.name.toLowerCase().includes(query.toLowerCase())
-  )
-
-  const handleFileUpload = async (e) => {
-    const file = e.target.files[0]
-    if (!file) return
-
-    await setWallpaperTheme(file, file.name)
-    setUserWallpapers(loadUserWallpapers())
-    // const url = URL.createObjectURL(file)
-    // const newWallpaper = { id: Date.now(), name: file.name, url, source: "user" }
-    // setUserWallpapers(prev => [...prev, newWallpaper])
-
-    // setWallpaperTheme(file, file.name)
-    onClose()
-  }
+  const filtered = Object.entries(themes).filter(([_, theme]) =>
+    theme.name.toLowerCase().includes(query.toLowerCase()))
 
   const bgColor = useMemo(
     () => hexToRgba(background, backgroundOpacity),
@@ -59,12 +37,12 @@ export function WallpaperDmenu({ isOpen, onClose }) {
     [borderColor, borderOpacity]
   );
 
-  useEffect(() => {
-    if (isOpen) {
-      inputRef.current?.focus()
-      setUserWallpapers(loadUserWallpapers())
-    }
-  }, [isOpen])
+  // useEffect(() => {
+  //   if (isOpen) {
+  //     inputRef.current?.focus()
+  //     setUserWallpapers(loadUserWallpapers())
+  //   }
+  // }, [isOpen])
 
   useEffect(() => {
     const handleKey = (e) => {
@@ -102,26 +80,6 @@ export function WallpaperDmenu({ isOpen, onClose }) {
             className="flex-1 bg-transparent outline-none text-sm"
             style={{ color: config.colors.onSurface }}
           />
-
-          {/* Botón para subir wallpaper nuevo */}
-          <label
-            className="text-xs cursor-pointer px-2 py-1 rounded hover:opacity-80 shrink-0"
-            style={{ backgroundColor: borderColor, color: textColor }}
-          >
-            + Add
-            <input
-              type="file"
-              accept="image/*"
-              className="hidden"
-              onChange={(e) => {
-                const file = e.target.files[0]
-                if (file) {
-                  setWallpaperTheme(file)
-                  onClose()
-                }
-              }}
-            />
-          </label>
         </div>
 
         {/* Lista de resultados */}
@@ -132,22 +90,31 @@ export function WallpaperDmenu({ isOpen, onClose }) {
             </div>
           )}
 
-          {filtered.map(wallpaper => (
+          {filtered.map(([key, theme]) => (
             <button
-              key={wallpaper.id}
+              key={key}
               onClick={() => {
-                setWallpaperTheme(wallpaper.url)
+                setTheme(key)
                 onClose()
               }}
               className="w-full flex items-center gap-3 p-2 hover:opacity-80 text-left transition-opacity"
             >
               <img
-                src={wallpaper.url}
+                src={theme.wallpaper}
                 className="w-14 h-9 rounded object-cover shrink-0"
               />
-              <span className="text-sm capitalize" style={{ color: config.colors.onSurface }}>
-                {wallpaper.name}
-              </span>
+              <div className="flex flex-col">
+                <span className="text-sm">{theme.name}</span>
+                <div className="flex gap-1 mt-1">
+                  {Object.values(theme.tokens).slice(0, 4).map((color, i) => (
+                    <div
+                      key={i}
+                      className="w-3 h-3 rounded-full"
+                      style={{ backgroundColor: color }}
+                    />
+                  ))}
+                </div>
+              </div>
             </button>
           ))}
         </div>

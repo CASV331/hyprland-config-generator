@@ -50,18 +50,19 @@ export function StatusBar() {
     });
 
     return (
-        <div className="rounded-b-md items-center max-h-9">
+        <div className="items-center max-h-9">
             <div
-                className="rounded-b-[15px] flex items-center justify-between"
+                className="flex items-center justify-between"
                 style={{
                     backgroundColor: bgColor,
-                    border: `${borderWidth}px solid ${borderColor}`,
+                    // borderTop: '0px',
+                    // border: `${borderWidth}px solid ${borderColor}`,
                     color: textColor,
                     fontSize: `${fontSize}px`,
                     // margin: `${marginTop}px ${marginRight}px ${marginBottom}px ${marginLeft}px`,
                 }}
             >
-                <div className="flex justify-end items-center p-0.5 rounded-lg">
+                <div className="flex justify-end items-center p-0.5 rounded-lg ml-1">
                     <div className="flex">
                         {[1, 2, 3, 4, 5, 6, 7, 8, 9].filter(desktop =>
                             desktops[desktop].windows.length > 0 || desktop === activeDesktop
@@ -97,7 +98,7 @@ export function StatusBar() {
                     </div>
                 </div>
 
-                <div className="flex justify-end items-center">
+                <div className="flex justify-end items-center p-1 mr-1">
                     <div className="flex flex-1 items-center justify-end gap-4">
                         <div className="flex items-center gap-1">
                             SSID Name

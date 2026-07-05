@@ -1,13 +1,12 @@
 import { useReducer } from "react";
 import { createContext, useContext, useState } from "react";
-import { generateThemeFromImage } from "../core/theme/generateTheme.js";
 // import { applyTheme } from "../core/theme/applyTheme.js";
 import { desktopReducer } from "./reducers/desktopReducer.js"
+// Themes imports 
 import { buildConfigFromTokens } from "../core/theme/buildConfig.js";
-import { defaultTokens } from "../core/theme/themeTokens.js"
-import { fileToBase64, loadTheme, saveTheme, saveUserWallpaper } from "../core/theme/themeStorage.js"
+import { defaultTheme, themes } from "../core/theme/themeTokens.js"
+import { loadSavedTheme, saveTheme } from "../core/theme/themeStorage.js"
 
-// const initialConfig = buildConfigFromTheme(defaultTokens)
 const defaultDesktopState = {
     activeDesktop: 1,
     desktops: {
@@ -27,16 +26,9 @@ const defaultDesktopState = {
 const ConfigContext = createContext(null);
 
 function getInitialConfig() {
-    const saved = loadTheme()
-
-    if (saved) {
-        return buildConfigFromTokens(
-            saved.colors ?? defaultTokens,
-            saved.wallpaperURL
-        )
-    }
-
-    return buildConfigFromTokens(defaultTokens)
+    const savedTheme = loadSavedTheme()
+    const theme = themes[savedTheme] ?? defaultTheme
+    return buildConfigFromTokens(theme.tokens, theme.wallpaper)
 }
 
 export function ConfigProvider({ children }) {
@@ -82,32 +74,13 @@ export function ConfigProvider({ children }) {
         payload: { desktopNumber }
     })
 
-    const setWallpaperTheme = async (source, name) => {
-        try {
-            let url
-            if (source instanceof File) {
-                url = await fileToBase64(source)
-                saveUserWallpaper(name ?? source.name, url)
-            } else {
-                url = source
-            }
+    const setTheme = (themeName) => {
+        const theme = themes[themeName]
+        if (!theme) return
 
-            const generatedTheme = await generateThemeFromImage(url)
-
-            saveTheme(generatedTheme, url)
-
-            setConfig(prev => ({
-                ...prev,
-                wallpaper: { url },
-                statusBar: { ...prev.statusBar, ...generatedTheme.statusBar },
-                terminal: { ...prev.terminal, ...generatedTheme.terminal },
-                window: { ...prev.window, ...generatedTheme.window },
-                colors: { ...prev.colors, ...generatedTheme.colors }
-            }))
-        } catch (error) {
-            console.error("Theme generation failed: ", error)
-        }
-    };
+        saveTheme(themeName)
+        setConfig(buildConfigFromTokens(theme.tokens, theme.wallpaper))
+    }
 
 
     return (
@@ -125,7 +98,7 @@ export function ConfigProvider({ children }) {
             switchDesktop,
             moveWindow,
             switchWindowDesktop,
-            setWallpaperTheme
+            setTheme
         }}>
             {children}
         </ConfigContext.Provider>

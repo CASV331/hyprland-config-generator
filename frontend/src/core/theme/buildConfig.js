@@ -1,4 +1,4 @@
-import { defaultTokens } from "./themeTokens"
+import { defaultTheme } from "./themeTokens"
 
 export function buildConfigFromTokens(tokens = defaultTokens, wallpaperUrl = "/assets/wallpapers/anime_girl_white_hair.png") {
 
@@ -38,7 +38,7 @@ export function buildConfigFromTokens(tokens = defaultTokens, wallpaperUrl = "/a
         window: {
             borderColor: tokens.primary,
             borderColorUnfocused: tokens.outline,
-            borderWidth: 2,
+            borderWidth: 1,
             borderRadius: 8,
             gap: 4
         }
